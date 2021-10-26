@@ -5,7 +5,7 @@
 import tokenizeQuery from './QueryTokenizer.js'
 
 function RegExpEscape (string) {
-    return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+  return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 function filterQueries (query, keys) {
