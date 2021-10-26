@@ -1,4 +1,4 @@
-import Searcher from '../src/JsonSearch.js'
+import tokenizeQuery from '../src/QueryTokenizer.js'
 import './jest.extends.js'
 import permutate from './permutator.js'
 
@@ -7,7 +7,6 @@ describe('Tokenizer test, queries:', () => {
     { a: 'aa', b: 'bb', c: 'c c' },
     { a: 'dd', b: 'ee', c: 'f f' }
   ]
-  const searcher = new Searcher(objArray)
 
   const queryToTokens = [
     { q: 'aa', token: { q: 'aa', key: undefined, isNegate: false } },
@@ -32,7 +31,7 @@ describe('Tokenizer test, queries:', () => {
     const query = arrayOfq.map(q => q.q).join(' ')
 
     it(query, () => {
-      const tokens = searcher.tokenizeQuery(query)
+      const tokens = tokenizeQuery(query, Object.keys(objArray[0]))
       expect(tokens.length).toBe(arrayOfq.length)
 
       arrayOfq.forEach(q => expect(tokens).toContainObject(q.token))
