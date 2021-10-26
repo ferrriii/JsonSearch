@@ -1,5 +1,5 @@
 {
-  "name": "jsonsearch",
+  "name": "json-search",
   "version": "1.0.0",
   "description": "Easy and lightweight search library for finding items inside an array of objects",
   "main": "dist/JsonSearch.js",
