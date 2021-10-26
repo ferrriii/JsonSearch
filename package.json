@@ -1,13 +1,13 @@
 {
   "name": "search-array",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Easy and lightweight search library for finding items inside an array of objects",
   "main": "dist/JsonSearch.js",
   "module": "./dist/module/JsonSearch.js",
-  "unpkg": "./dist/lib/JsonSearch.js",
-  "jsdelivr": "./dist/lib/JsonSearch.js",  
+  "unpkg": "./dist/lib/JsonSearch-min.js",
+  "jsdelivr": "./dist/lib/JsonSearch-min.js",  
   "scripts": {
-    "minify": "uglifyjs ./dist/lib/JsonSearch.js --compress --mangle --source-map --output ./dist/lib/JsonSearch-min.js",
+    "minify": "uglifyjs ./dist/lib/JsonSearch.js --compress --mangle --comments --source-map --output ./dist/lib/JsonSearch-min.js",
     "lint": "standard --fix",
     "build:umd": "npm run lint && cross-env BABEL_ENV=browser babel src --out-dir dist/lib --source-maps --copy-files && npm run minify",
     "build:esm": "npm run lint && cross-env BABEL_ENV=module babel src --out-dir dist/esm --source-maps --copy-files",
