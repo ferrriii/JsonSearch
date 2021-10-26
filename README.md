@@ -64,3 +64,8 @@ import JsonSearch from 'search-array'
 
 ...
 ```
+
+## TODO
+
+- Add support for nested objects
+- Add support for wild card query
