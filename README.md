@@ -5,14 +5,14 @@ Easy and lightweight search library for finding items inside an array of objects
 
 ## Query options
 
-You can use any of the below formats to quey items inside arrays. A combination of these items is also possible.
+You can use any of the below syntaxes to quey items inside arrays. A combination of these items is also possible.
 
-- `[keyword]`: any keyword like `test`, `free text search`
-- `"[keyword]"`: exact match. It preserves white spaces. example `Back End`
-- `-[keyword]`: not containing text. it will return items which don't have the keyword
-  - you can use exact match syntax as well like, `-"Query with space"`
-- `[key]:[keyword]`: returns items that have the `[keyword]` in the `[key]` property of the object. example, `name:bob`
-  - you can use exact match or not containing query like, `name:"Bob Rich"` or, `-name:bob` (name should not contain `bob`)
+- `[keywords]`: Returns items that contain any of the keywords. Example, `test`, `free text search`
+- `"[keyword]"`: Returns items that contain the exact keyword. It preserves white spaces. Example, `Back End`
+- `-[keyword]`: Items not containing the keyword.
+  - You can use exact match syntax as well like, `-"Query with space"`
+- `[key]:[keyword]`: Returns items that have the `[keyword]` in the `[key]` property of the object. Example, `name:bob`
+  - you can use exact match or not containing query syntaxes as well. Example, `name:"Bob Rich"` or, `-name:bob` (name should not contain `bob`)
 
 ## Usage
 
