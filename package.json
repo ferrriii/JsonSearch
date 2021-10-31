@@ -1,23 +1,23 @@
 {
   "name": "search-array",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Easy and lightweight search library for finding items inside an array of objects",
   "main": "dist/JsonSearch.js",
-  "module": "./dist/module/JsonSearch.js",
+  "module": "./dist/esm/JsonSearch.js",
+  "browser": "./dist/esm/JsonSearch.js",
   "unpkg": "./dist/lib/JsonSearch-min.js",
-  "jsdelivr": "./dist/lib/JsonSearch-min.js",  
+  "jsdelivr": "./dist/lib/JsonSearch-min.js",
   "scripts": {
     "minify": "uglifyjs ./dist/lib/JsonSearch.js --compress --mangle --comments --source-map --output ./dist/lib/JsonSearch-min.js",
     "lint": "standard --fix",
-    "build:umd": "npm run lint && cross-env BABEL_ENV=browser babel src --out-dir dist/lib --source-maps --copy-files && npm run minify",
-    "build:esm": "npm run lint && cross-env BABEL_ENV=module babel src --out-dir dist/esm --source-maps --copy-files",
-    "build:cjs": "npm run lint && babel src --out-dir dist --source-maps --copy-files",
-    "build": "npm run build:cjs && npm run build:umd && npm run build:esm",
+    "build:browser": "rollup -c && npm run minify",
+    "build:esm": "cross-env BABEL_ENV=module babel src --out-dir dist/esm --source-maps --copy-files",
+    "build:cjs": "babel src --out-dir dist --source-maps --copy-files",
+    "build": "npm run lint && npm run build:cjs && npm run build:browser && npm run build:esm",
     "test": "jest"
   },
   "author": "ferrriii",
   "license": "MIT",
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ferrriii/JsonSearch.git"
@@ -25,48 +25,50 @@
   "keywords": [
     "search",
     "JSON",
-    "fuzzy"
+    "fuzzy",
+    "clientside",
+    "search engine",
+    "fulltext search"
   ],
-  "homepage": "https://github.com/ferrriii/JsonSearch#readme",  
+  "homepage": "https://github.com/ferrriii/JsonSearch#readme",
   "devDependencies": {
-    "standard": "*",
-    "@babel/cli": "7.15.7",
+    "@babel/cli": "^7.15.7",
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
-    "jest": "^27.3.1",
+    "@rollup/plugin-babel": "^5.3.0",
     "cross-env": "*",
+    "jest": "^27.3.1",
+    "rollup": "^2.58.3",
+    "standard": "*",
     "uglify-js": "*"
   },
   "babel": {
     "env": {
-      "browser": {
-        "presets": [
-          ["@babel/preset-env", {
-            "bugfixes": true,
-            "targets": "> 0.25%",
-            "modules": "umd"
-          }]
-        ]
-      },
       "development": {
         "presets": [
-          ["@babel/preset-env", {
-            "bugfixes": true,
-            "targets": {
-              "node": "6.10"
+          [
+            "@babel/preset-env",
+            {
+              "bugfixes": true,
+              "targets": {
+                "node": "6.10"
+              }
             }
-          }]
+          ]
         ]
       },
       "module": {
         "presets": [
-          ["@babel/preset-env", {
-            "bugfixes": true,
-            "targets": {
-              "node": "6.10"
-            },
-            "modules": false
-          }]
+          [
+            "@babel/preset-env",
+            {
+              "bugfixes": true,
+              "targets": {
+                "node": "6.10"
+              },
+              "modules": false
+            }
+          ]
         ]
       }
     }
@@ -85,5 +87,5 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ]
-  }  
+  }
 }

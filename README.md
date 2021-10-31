@@ -45,13 +45,29 @@ console.log(foundObjects) // prints item 1
 ```
 
 ### Browser
+Use as module:
+
+```JavaScript
+<script>
+  import JsonSearch from 'https://unpkg.com/search-array/dist/esm/JsonSearch.js'
+
+  const searcher = new JsonSearch(objectArray)
+  let foundObjects = searcher.query('good')
+</script>
 ```
+
+Or, classic:
+
+```html
 <script src="https://unpkg.com/search-array"></script>
 
 <script>
-// the JsonSearch class is available here
+  // the JsonSearch class is available here
+  const searcher = new JsonSearch(objectArray)
+  let foundObjects = searcher.query('good')
 </script>
 ```
+
 
 ### NPM
 Installation:
@@ -69,3 +85,7 @@ import JsonSearch from 'search-array'
 
 - Add support for nested objects
 - Add support for wild card query
+- Add support for array search
+- Add options for:
+  - Defining index keys
+  - Defining case sensivitiy
