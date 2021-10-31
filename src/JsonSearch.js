@@ -1,6 +1,6 @@
 /**
  * JsonSearch - https://www.npmjs.com/package/search-array
- * @license
+ * @license MIT
  */
 import tokenizeQuery from './QueryTokenizer.js'
 
