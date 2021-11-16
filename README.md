@@ -49,7 +49,7 @@ Use as module:
 
 ```JavaScript
 <script>
-  import JsonSearch from 'https://unpkg.com/search-array/dist/esm/JsonSearch.js'
+  import JsonSearch from 'https://unpkg.com/search-array/dist/esm/min/JsonSearch.js'
 
   const searcher = new JsonSearch(objectArray)
   let foundObjects = searcher.query('good')

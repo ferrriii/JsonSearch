@@ -1,6 +1,6 @@
 {
   "name": "search-array",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Easy and lightweight search library for finding items inside an array of objects",
   "main": "dist/JsonSearch.js",
   "module": "./dist/esm/JsonSearch.js",
@@ -8,10 +8,11 @@
   "unpkg": "./dist/lib/JsonSearch-min.js",
   "jsdelivr": "./dist/lib/JsonSearch-min.js",
   "scripts": {
-    "minify": "uglifyjs ./dist/lib/JsonSearch.js --compress --mangle --comments --source-map --output ./dist/lib/JsonSearch-min.js",
+    "minify:browser": "uglifyjs ./dist/lib/JsonSearch.js --compress --mangle --comments --source-map --output ./dist/lib/JsonSearch-min.js",
+    "minify:esm": "npx mkdirp ./dist/esm/min/ && uglifyjs ./dist/esm/JsonSearch.js --compress --mangle --comments --source-map --output ./dist/esm/min/JsonSearch.js && uglifyjs ./dist/esm/QueryTokenizer.js --compress --mangle --comments --source-map --output ./dist/esm/min/QueryTokenizer.js",
     "lint": "standard --fix",
-    "build:browser": "rollup -c && npm run minify",
-    "build:esm": "cross-env BABEL_ENV=module babel src --out-dir dist/esm --source-maps --copy-files",
+    "build:browser": "rollup -c && npm run minify:browser",
+    "build:esm": "cross-env BABEL_ENV=module babel src --out-dir dist/esm --source-maps --copy-files && npm run minify:esm",
     "build:cjs": "babel src --out-dir dist --source-maps --copy-files",
     "build": "npm run lint && npm run build:cjs && npm run build:browser && npm run build:esm",
     "test": "jest"
@@ -38,6 +39,7 @@
     "@rollup/plugin-babel": "^5.3.0",
     "cross-env": "*",
     "jest": "^27.3.1",
+    "mkdirp": "^1.0.4",
     "rollup": "^2.58.3",
     "standard": "*",
     "uglify-js": "*"
