@@ -2,6 +2,39 @@ import tokenizeQuery from '../src/QueryTokenizer.js'
 import './jest.extends.js'
 import permutate from './permutator.js'
 
+describe('Tokenizer edge cases, queries:', () => {
+  it('"a -b"', () => {
+    const tokens = tokenizeQuery('"a -b"', ['a', 'b'])
+    expect(tokens.length).toBe(1)
+
+    expect(tokens).toContainObject({q:'a -b', key: undefined, isNegate: false})
+  })
+
+
+  it('"a:ss"', () => {
+    const tokens = tokenizeQuery('"a:ss"', ['a', 'b'])
+    expect(tokens.length).toBe(1)
+
+    expect(tokens).toContainObject({q:'a:ss', key: undefined, isNegate: false})
+  })
+
+  it("'a:22 -b:33 -c'", () => {
+    const tokens = tokenizeQuery("'a:22 -b:33 -c'", ['a', 'b'])
+    expect(tokens.length).toBe(1)
+
+    expect(tokens).toContainObject({q:'a:22 -b:33 -c', key: undefined, isNegate: false})
+  })
+
+  it('a:d "a:ss"', () => {
+    const tokens = tokenizeQuery('a:d "a:ss"', ['a', 'b'])
+    expect(tokens.length).toBe(2)
+
+    expect(tokens).toContainObject({q:'d', key: 'a', isNegate: false})
+    expect(tokens).toContainObject({q:'a:ss', key: undefined, isNegate: false})
+  })
+
+})
+
 describe('Tokenizer test, queries:', () => {
   const objArray = [
     { a: 'aa', b: 'bb', c: 'c c' },
