@@ -4,7 +4,7 @@
   "description": "Easy and lightweight search library for finding items inside an array of objects",
   "main": "dist/JsonSearch.js",
   "module": "./dist/esm/JsonSearch.js",
-  "browser": "./dist/esm/JsonSearch.js",
+  "browser": "./dist/esm/min/JsonSearch.js",
   "unpkg": "./dist/lib/JsonSearch-min.js",
   "jsdelivr": "./dist/lib/JsonSearch-min.js",
   "scripts": {
