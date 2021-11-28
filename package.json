@@ -1,6 +1,6 @@
 {
   "name": "search-array",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Easy and lightweight search library for finding items inside an array of objects",
   "main": "dist/JsonSearch.js",
   "module": "./dist/esm/JsonSearch.js",
