@@ -4,10 +4,21 @@
  */
 import tokenizeQuery from './QueryTokenizer.js'
 
+/**
+ * Escape regex special characters in srting
+ * @param  {string} input string
+ * @return {String} escpaed string
+ */
 function RegExpEscape (string) {
   return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
+/**
+ * Escape regex special characters in srting
+ * @param  {query} input search queries
+ * @param  {keys} Array of acceptable object keys
+ * @return {Object} regexes based on query and keys
+ */
 function filterQueries (query, keys) {
   const tokens = tokenizeQuery(query, keys)
 
@@ -22,6 +33,16 @@ function filterQueries (query, keys) {
     keySearch: containsKeyRegexs,
     keySearchNegate: notContainsKeyRegexs
   }
+}
+
+/**
+ * Test the value against the regex. It automatically detects type of value (Array or String) and performs apropriate test
+ * @param  {value} String or Array to test the regex in
+ * @param  {regex} RegExp to test with
+ * @return {Boolean} True if regex matched the value
+ */
+function test (value, regex) {
+  if (Array.isArray(value)) { return (value.find(item => regex.test(item)) !== undefined) } else { return regex.test(value) }
 }
 
 export default class JsonSearch {
@@ -42,32 +63,26 @@ export default class JsonSearch {
   filterFunc (query) {
     if (!query) return () => true
 
-    /*
-    return obj => {
-      const queryRegex = new RegExp(RegExpEscape(query), 'i');
-      if (queryRegex.test(obj.name)) return true;
-      if (queryRegex.test(obj.desc)) return true;
-      if (obj.tags.find(tag => queryRegex.test(tag)) !== undefined) return true;
-      return false;
-    };
-    */
-
     const queryFuncs = filterQueries(query, Object.values(this.indice))
     return item => {
       let itemMatched = true
       let keyFound
 
       let negatedKeywordNotFound = true
+      // here i have combined two separate for{} blocks for optimization purpose
+      // ideally, we should have a for{} block for testing normal search and
+      // another for{} block for negated search block (like what we have for indexed search)
+      // but I used different variables to do both searches in one for block
       for (const key in this.indice) {
         const value = item[key]
 
         if (queryFuncs.textSearchNegate) {
-          negatedKeywordNotFound = negatedKeywordNotFound && !queryFuncs.textSearchNegate.test(value)
+          negatedKeywordNotFound = negatedKeywordNotFound && !test(value, queryFuncs.textSearchNegate)
         }
         if (!negatedKeywordNotFound) return false
 
         if (queryFuncs.textSearch) {
-          keyFound = keyFound || queryFuncs.textSearch.test(value)
+          keyFound = keyFound || test(value, queryFuncs.textSearch)
         }
       }
       if (keyFound === false) return false
@@ -75,13 +90,13 @@ export default class JsonSearch {
       // find indexed search
       for (const { key, regex } of queryFuncs.keySearch) {
         const value = item[key]
-        itemMatched = itemMatched && regex.test(value)
+        itemMatched = itemMatched && test(value, regex)
         if (!itemMatched) return false
       }
       // find negated indexed search
       for (const { key, regex } of queryFuncs.keySearchNegate) {
         const value = item[key]
-        itemMatched = itemMatched && !regex.test(value)
+        itemMatched = itemMatched && !test(value, regex)
         if (!itemMatched) return false
       }
 
@@ -89,6 +104,11 @@ export default class JsonSearch {
     }
   }
 
+  /**
+   * Search the jsonArray for the query and returns array of found objects
+   * @param  {q} query string
+   * @return {Array} array of found objects
+   */
   query (q) {
     return this.jsonArray.filter(this.filterFunc(q))
   }

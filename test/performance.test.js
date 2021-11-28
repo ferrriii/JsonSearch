@@ -1,4 +1,4 @@
-import Searcher from '../src/JsonSearch.js'
+import Searcher from '../dist/esm/min/JsonSearch.js'
 
 function benchmark (count) {
   const objArray = []
@@ -7,7 +7,8 @@ function benchmark (count) {
     const obj = {
       a: values[Math.floor(Math.random() * values.length)],
       b: values[Math.floor(Math.random() * values.length)],
-      c: values[Math.floor(Math.random() * values.length)]
+      c: values[Math.floor(Math.random() * values.length)],
+      d: [values[Math.floor(Math.random() * values.length)]]
     }
     objArray.push(obj)
   }
@@ -64,7 +65,8 @@ function benchmark (count) {
 
 describe('Test simple object with different queries', () => {
   it('should run less than 10ms', () => {
-    expect(benchmark(1000)).toBeLessThan(2)
-    expect(benchmark(10000)).toBeLessThan(10)
+    const benchmarkResults1k = benchmark(1000)
+    expect(benchmarkResults1k).toBeLessThan(3)
+    expect(benchmark(10000)).toBeLessThan(benchmarkResults1k * 10)
   })
 })

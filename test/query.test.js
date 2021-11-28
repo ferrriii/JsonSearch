@@ -3,9 +3,9 @@ import './jest.extends.js'
 
 describe('Test simple object with different queries', () => {
   const objArray = [
-    { a: 'aa', b: 'bb', c: 'c c' },
-    { a: 'dd', b: 'ee', c: 'f f' },
-    { a: 'gg c', b: 'hh', c: 'bb ee f f d d' }
+    { a: 'aa', b: 'bb', c: 'c c', d: ['item1', 'item2'] },
+    { a: 'dd', b: 'ee', c: 'f f', d: ['item1', 'item3'] },
+    { a: 'gg c', b: 'hh', c: 'bb ee f f d d', d: ['item4'] }
   ]
   const searcher = new Searcher(objArray)
 

@@ -30,7 +30,8 @@ const JsonSearch = require('search-array').default
 const objectArray = [
   {id:1, title: 'Good book', author: 'Jim', color: 'red'},
   {id:2, title: 'Interesting Movie', author: 'Bob', color: 'dark red'},
-  {id:3, title: 'Good Series', author: 'Alex', color: 'dark blue'}
+  {id:3, title: 'Good Series', author: 'Alex', color: 'dark blue'},
+  {id:4, title: 'Something', author: 'Feri', colors: ['red', 'blue']}
 ]
 
 const searcher = new JsonSearch(objectArray)
@@ -42,12 +43,15 @@ console.log(foundObjects) // prints item 3
 
 foundObjects = searcher.query('good -color:"dark blue"')
 console.log(foundObjects) // prints item 1
+
+foundObjects = searcher.query('red')
+console.log(foundObjects) // prints item 1, 2 and 4
 ```
 
 ### Browser
 Use as module:
 
-```JavaScript
+```html
 <script type="module">
   import JsonSearch from 'https://unpkg.com/search-array/dist/esm/min/JsonSearch.js'
 
@@ -88,7 +92,6 @@ import JsonSearch from 'search-array'
 
 - Add support for nested objects
 - Add support for wild card query
-- Add support for array search
 - Add options for:
   - Defining index keys
   - Defining case sensivitiy
