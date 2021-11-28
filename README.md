@@ -35,10 +35,10 @@ const objectArray = [
 
 const searcher = new JsonSearch(objectArray)
 let foundObjects = searcher.query('good')
-console.log(foundObjects) // prints item 1 and 2
+console.log(foundObjects) // prints items with id 1 and 3
 
 foundObjects = searcher.query('good -red')
-console.log(foundObjects) // prints item 2
+console.log(foundObjects) // prints item 3
 
 foundObjects = searcher.query('good -color:"dark blue"')
 console.log(foundObjects) // prints item 1
@@ -48,9 +48,10 @@ console.log(foundObjects) // prints item 1
 Use as module:
 
 ```JavaScript
-<script>
+<script type="module">
   import JsonSearch from 'https://unpkg.com/search-array/dist/esm/min/JsonSearch.js'
 
+  const objectArray = [/*your objects here*/]
   const searcher = new JsonSearch(objectArray)
   let foundObjects = searcher.query('good')
 </script>
@@ -63,6 +64,8 @@ Or, classic:
 
 <script>
   // the JsonSearch class is available here
+
+  const objectArray = [/*your objects here*/]
   const searcher = new JsonSearch(objectArray)
   let foundObjects = searcher.query('good')
 </script>
