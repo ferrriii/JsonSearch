@@ -14,39 +14,46 @@ function benchmark (count) {
   }
   const maxIteration = Math.floor(objArray.length / 8)
 
+  let queryCount = 0
   const searcher = new Searcher(objArray)
   const startTime = Date.now()
   // simple query
   for (let i = 0; i < maxIteration; i++) {
     searcher.query(values[Math.floor(Math.random() * values.length)])
+    queryCount++
   }
   // query with key
   for (let i = 0; i < maxIteration; i++) {
     const k = values[Math.floor(Math.random() * values.length)]
     const q = values[Math.floor(Math.random() * values.length)]
     searcher.query(`${k}:${q}`)
+    queryCount++
   }
   // query exact match
   for (let i = 0; i < maxIteration; i++) {
     const q = values[Math.floor(Math.random() * values.length)]
     searcher.query(`"${q}"`)
+    queryCount++
   }
 
   // simple query (negated)
   for (let i = 0; i < maxIteration; i++) {
     const q = values[Math.floor(Math.random() * values.length)]
     searcher.query(`-${q}`)
+    queryCount++
   }
   // query with key (negated)
   for (let i = 0; i < maxIteration; i++) {
     const k = values[Math.floor(Math.random() * values.length)]
     const q = values[Math.floor(Math.random() * values.length)]
     searcher.query(`-${k}:${q}`)
+    queryCount++
   }
   // query exact match (negated)
   for (let i = 0; i < maxIteration; i++) {
     const q = values[Math.floor(Math.random() * values.length)]
     searcher.query(`-'${q}'`)
+    queryCount++
   }
 
   // complex query
@@ -57,16 +64,20 @@ function benchmark (count) {
     const q3 = values[Math.floor(Math.random() * values.length)]
     const q4 = values[Math.floor(Math.random() * values.length)]
     searcher.query(`${q1} "${q2}" ${k}:${q3} -${q4}`)
+    queryCount++
   }
-  const avgQueryExecutionTime = (Date.now() - startTime) / (maxIteration * 7) // 7 for 7 for() blocks
-  console.log(`Average Query Time in an array of ${count} items`, avgQueryExecutionTime)
-  return avgQueryExecutionTime
+  return { duration: (Date.now() - startTime), queryCount }
 }
 
 describe('Test simple object with different queries', () => {
-  it('should run less than 10ms', () => {
-    const benchmarkResults1k = benchmark(1000)
-    expect(benchmarkResults1k).toBeLessThan(3)
-    expect(benchmark(10000)).toBeLessThan(benchmarkResults1k * 10)
+  it('query time', () => {
+    const benchmarkResults100 = benchmark(1000)
+    const benchmarkResults300 = benchmark(3000)
+
+    const ops100 = benchmarkResults100.queryCount * 1000 / benchmarkResults100.duration
+    const ops300 = benchmarkResults300.queryCount * 1000 / benchmarkResults300.duration
+
+    console.log(`${benchmarkResults100.queryCount} queries took ${benchmarkResults100.duration}ms; TPS:${ops100}`)
+    console.log(`${benchmarkResults300.queryCount} queries took ${benchmarkResults300.duration}ms; TPS:${ops300}`)
   })
 })
