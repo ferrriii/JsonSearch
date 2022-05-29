@@ -43,7 +43,12 @@ function filterQueries (query, searchKeys, searchKeysToObjectKeyMap) {
  * @return {Boolean} True if regex matched the value
  */
 function test (value, regex) {
-  if (Array.isArray(value)) { return (value.find(item => regex.test(item)) !== undefined) } else { return regex.test(value) }
+  if (Array.isArray(value)) {
+    return (value.find(item => regex.test(item)) !== undefined) 
+  } else {
+    return regex.test(value)
+  }
+}
 }
 
 export default class JsonSearch {
