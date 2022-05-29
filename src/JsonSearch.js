@@ -29,7 +29,7 @@ function filterQueries (query, searchKeys, searchKeysToObjectKeyMap) {
   const notContainsKeyRegexs = tokens.filter(token => token.key !== undefined && token.isNegate).map(token => { return { key: searchKeysToObjectKeyMap[token.key], regex: new RegExp(RegExpEscape(token.q), 'i') } })
 
   return {
-    textSearch: containsTextRegex ? new RegExp(containsTextRegex, 'i') : undefined,
+    textSearch: containsTextRegex ? new RegExp(containsTextRegex, 'ig') : undefined,
     textSearchNegate: notcontainsTextRegex ? new RegExp(notcontainsTextRegex, 'i') : undefined,
     keySearch: containsKeyRegexs,
     keySearchNegate: notContainsKeyRegexs
@@ -44,16 +44,27 @@ function filterQueries (query, searchKeys, searchKeysToObjectKeyMap) {
  */
 function test (value, regex) {
   if (Array.isArray(value)) {
-    return (value.find(item => regex.test(item)) !== undefined) 
+    return (value.find(item => regex.test(item)) !== undefined)
   } else {
     return regex.test(value)
   }
 }
+
+function match (value, regex) {
+  if (Array.isArray(value)) {
+    return value.reduce((score, item) => {
+      return score + (item.match(regex) || []).length
+    }, 0)
+  } else {
+    // return count of matched items
+    return (value.match(regex) || []).length
+  }
 }
 
 export default class JsonSearch {
   constructor (jsonArray, options = {}) {
     this.jsonArray = jsonArray
+    this.sort = options.sort
     this.indice = options.indice || {}
     if (this.jsonArray.length <= 0) return
     if (Object.keys(this.indice).length > 0) return
@@ -68,11 +79,10 @@ export default class JsonSearch {
   }
 
   filterFunc (query) {
-    if (!query) return () => true
-
     // search index keys
     const searchKeys = Object.keys(this.indice)
     const queryFuncs = filterQueries(query, searchKeys, this.indice)
+    const testF = this.sort ? match : test
     return item => {
       let itemMatched = true
       let keyFound
@@ -82,35 +92,53 @@ export default class JsonSearch {
       // ideally, we should have a for{} block for testing normal search and
       // another for{} block for negated search block (like what we have for indexed search)
       // but I used different variables to do both searches in one for block
+      let score = 0
       for (const [, objectKey] of Object.entries(this.indice)) {
         const value = item[objectKey]
 
         if (queryFuncs.textSearchNegate) {
-          negatedKeywordNotFound = negatedKeywordNotFound && !test(value, queryFuncs.textSearchNegate)
+          negatedKeywordNotFound = negatedKeywordNotFound && !testF(value, queryFuncs.textSearchNegate) && ++score
         }
         if (!negatedKeywordNotFound) return false
 
         if (queryFuncs.textSearch) {
-          keyFound = keyFound || test(value, queryFuncs.textSearch)
+          const m = testF(value, queryFuncs.textSearch)
+          score += m
+          keyFound = keyFound || m
         }
       }
-      if (keyFound === false) return false
+      // NOTE: keyFound can be either false or 0, so i used == instead of ===
+      // eslint-disable-next-line
+      if (keyFound == false) return false
 
       // find indexed search
       for (const { key, regex } of queryFuncs.keySearch) {
         const value = item[key]
-        itemMatched = itemMatched && test(value, regex)
+        itemMatched = itemMatched && testF(value, regex) && ++score
         if (!itemMatched) return false
       }
       // find negated indexed search
       for (const { key, regex } of queryFuncs.keySearchNegate) {
         const value = item[key]
-        itemMatched = itemMatched && !test(value, regex)
+        itemMatched = itemMatched && !testF(value, regex) && ++score
         if (!itemMatched) return false
       }
 
-      return itemMatched
+      return this.sort ? { item, score } : item
     }
+  }
+
+  queryWithScore (q) {
+    const filter = this.filterFunc(q)
+    return this.jsonArray.reduce((filtered, item) => {
+      const found = filter(item)
+      if (found) {
+        filtered.push(found)
+      }
+      return filtered
+    }, [])
+      .sort((a, b) => b.score - a.score)
+      .map(item => item.item)
   }
 
   /**
@@ -119,6 +147,8 @@ export default class JsonSearch {
    * @return {Array} array of found objects
    */
   query (q) {
+    if (!q) return this.jsonArray
+    if (this.sort) return this.queryWithScore(q)
     return this.jsonArray.filter(this.filterFunc(q))
   }
 }

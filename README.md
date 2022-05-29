@@ -48,6 +48,17 @@ foundObjects = searcher.query('red')
 console.log(foundObjects) // prints item 1, 2 and 4
 ```
 
+#### Enale sorting
+By default, the ordering of the original array is preserved in the results. But it's possible to sort results based on their match strength, example:
+```JavaScript
+const searcher = new JsonSearch(objectArray, {
+  sort: true
+})
+
+```
+
+So, the first item in the `query()` results would be a better match for the query compared to the last item in the results.
+
 #### Defining search indice
 By default all object keys of the first item in the objectArray will be used for finding the items in the whole array.
 But you can specify search object keys by passing an object of indice as options.
